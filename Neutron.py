@@ -12,7 +12,7 @@ class NeutronClient(object):
     def __init__(self, auth_token):
         self.auth_token = auth_token
         ## Cambiar URL
-        self.neutron_url = "http://10.20.12.188:9696/v2.0/"
+        self.neutron_url = "http://10.20.12.178:9696/v2.0/"
         self.headers = {
             'Content-Type': 'application/json',
             'X-Auth-Token': self.auth_token

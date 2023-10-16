@@ -24,22 +24,38 @@ async def createTopology(body: dict):
         return JSONResponse(content=data,status_code=400)
     else:
         if 'codigo' in body and 'tipo' in body:
-            match body['tipo']:
-                case 1:
-                    data = createTopo1(body['codigo'],body['tipo'])
-                    return JSONResponse(content=data,status_code=200)
-                case 2:
-                    data = createTopo2(body['codigo'],body['tipo'])
-                    return JSONResponse(content=data,status_code=200)
-                case 3:
-                    data = createTopo3(body['codigo'],body['tipo'])
-                    return JSONResponse(content=data,status_code=200)
-                case 4:
-                    data = createTopo4(body['codigo'],body['tipo'])
-                    return JSONResponse(content=data,status_code=200)
-                case _:
-                    data = {"mensaje": "Se envió un formato de dato inválido o no se tiene registro de esta topologia"}
-                    return JSONResponse(content=data,status_code=400)
+            ## Para versiones de python superiores en adelante (3.10)
+            #match body['tipo']:
+                #case 1:
+                    #data = createTopo1(body['codigo'],body['tipo'])
+                    #return JSONResponse(content=data,status_code=200)
+                #case 2:
+                    #data = createTopo2(body['codigo'],body['tipo'])
+                    #return JSONResponse(content=data,status_code=200)
+                #case 3:
+                    #data = createTopo3(body['codigo'],body['tipo'])
+                    #return JSONResponse(content=data,status_code=200)
+                #case 4:
+                    #data = createTopo4(body['codigo'],body['tipo'])
+                    #return JSONResponse(content=data,status_code=200)
+                #case _:
+                    #data = {"mensaje": "Se envió un formato de dato inválido o no se tiene registro de esta topologia"}
+                    #return JSONResponse(content=data,status_code=400)
+            if body['tipo'] == 1:
+                data = createTopo1(body['codigo'],body['tipo'])
+                return JSONResponse(content=data,status_code=200)                
+            elif body['tipo'] == 2:
+                data = createTopo2(body['codigo'],body['tipo'])
+                return JSONResponse(content=data,status_code=200)
+            elif body['tipo'] == 3:
+                data = createTopo3(body['codigo'],body['tipo'])
+                return JSONResponse(content=data,status_code=200)                            
+            elif body['tipo'] == 4:
+                data = createTopo4(body['codigo'],body['tipo'])
+                return JSONResponse(content=data,status_code=200)
+            else:
+                data = {"mensaje": "Se envió un formato de dato inválido o no se tiene registro de esta topologia"}
+                return JSONResponse(content=data,status_code=400)
         else:
             data = {"mensaje": "Falta parámetros para la creación de la topología"}
             return JSONResponse(content=data,status_code=400)
@@ -311,10 +327,10 @@ def createTopo4(alumno,tipo):
 
 if __name__ == "__main__":
     # Autenticando con Openstack
-    # username = Defino nombre de usuario
-    # password = Defino contraseña
-    # keystone = KeystoneAuth(username,password)
-    # token = keystone.get_token()
+    username = 'tesis'
+    password = 'tesis'
+    keystone = KeystoneAuth(username,password)
+    token = keystone.get_token()
     # Si en caso hubiera un superusuario
     # token = keystone.updateToken()
     # Instancio los servicios de OpenStack
@@ -323,5 +339,5 @@ if __name__ == "__main__":
     # glance = GlanceClient(token)
     import uvicorn
     #Inicalizando servicio de API
-    uvicorn.run("backend:app",host="192.168.1.35",ssl_keyfile=os.environ.get('SSL_KEYFILE'),ssl_certfile=os.environ.get('SSL_CERTFILE'),port=8888,reload=True)
+    uvicorn.run("backend:app",host="10.20.12.178",ssl_keyfile=os.environ.get('SSL_KEYFILE'),ssl_certfile=os.environ.get('SSL_CERTFILE'),port=8888,reload=True)
     

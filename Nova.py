@@ -11,16 +11,17 @@ from AuxFunctions import validar_direccion_ip2
 class NovaClient(object):
     def __init__(self, auth_token,username, password):
         # Cambiar URL
-        self.auth_url = "http://10.20.12.188:5000/v3"
+        self.auth_url = "http://10.20.12.178:5000/v3"
         self.auth_token = auth_token
         self.username = username
         self.password = password
         self.IdProject = None  # Agregar propiedad IdProject
-        self.nova_url = "http://10.20.12.188:8774"
+        self.nova_url = "http://10.20.12.178:8774"
         self.headers = {
             'Content-Type': 'application/json',
             'X-Auth-Token': self.auth_token
         }
+        ## cambiar<
         self.providerNetworkID = "794ca462-47ec-4f90-8d1e-8be57004378a"
    
     def list_flavors(self):

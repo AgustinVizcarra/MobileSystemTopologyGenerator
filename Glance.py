@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 class GlanceClient(object):
     def __init__(self,auth_token):
         self.auth_token = auth_token
-        self.glance_url = "http://10.20.12.188:9292/v2"
+        self.glance_url = "http://10.20.12.178:9292/v2"
         self.headers = { 'Content-Type': 'application/json','X-Auth-Token': self.auth_token }
     
     def listar_imagenes(self):
