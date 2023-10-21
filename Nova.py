@@ -22,22 +22,36 @@ class NovaClient(object):
             'X-Auth-Token': self.auth_token
         }
         ## cambiar<
-        self.providerNetworkID = "794ca462-47ec-4f90-8d1e-8be57004378a"
+        self.providerNetworkID = "1457923c-6088-46e9-a184-5cd9b8d097d8"
    
+    #def list_flavors(self):
+        #url=f"{self.nova_url}/v2.1/flavors"
+        #response = requests.get(url, headers=self.headers)
+        #if response.status_code == 200:
+            #flavors = response.json().get('flavors', [])
+            #flavor_info = []
+            #for flavor in flavors:
+                #flavorcito=self.obtenerDetallesFlavor(flavor['id'])
+                #print(flavor['id'])
+                #print(flavorcito)
+                #flavor_info.append([flavorcito['flavor']['id'], flavorcito['flavor']['name'], flavorcito['flavor']['ram'], flavorcito['flavor']['disk'], flavorcito['flavor']['vcpus']])                
+            #return flavor_info
+        #else:
+            #raise Exception('Error al listar los flavors. Código de estado: {}'.format(response.status_code))
+            
     def list_flavors(self):
-        url=f"{self.nova_url}/v2.1/flavors"
+        url=f"{self.nova_url}/v2.1/flavors/detail"
         response = requests.get(url, headers=self.headers)
-
         if response.status_code == 200:
-            flavors = response.json().get('flavors', [])
-            flavor_info = []
-            for flavor in flavors:
-                flavorcito=self.obtenerDetallesFlavor(flavor['id'])
-                flavor_info.append([flavorcito['flavor']['id'], flavorcito['flavor']['name'], flavorcito['flavor']['ram'], flavorcito['flavor']['disk'], flavorcito['flavor']['vcpus']])
+            flavors = response.json()
+            list_flavors = flavors['flavors']
+            flavor_info = {}
+            for flavorvalue in list_flavors:
+                flavor_info[flavorvalue['name']]=[flavorvalue['id'],flavorvalue['vcpus'],flavorvalue['ram'],flavorvalue['disk']]
             return flavor_info
         else:
             raise Exception('Error al listar los flavors. Código de estado: {}'.format(response.status_code))
-
+        
     def create_flavor(self, name, ram, vcpus, disk):
         url=f"{self.nova_url}/v2.1/flavors"
         while True:
@@ -66,8 +80,7 @@ class NovaClient(object):
                 name = input("Por favor, introduce un nombre diferente para el flavor: ")
 
     def get_flavor(self, flavor_id):
-        response = requests.get(self.nova_url + '/flavors/{}'.format(flavor_id), headers=self.headers)
-
+        response = requests.get(self.nova_url + '/v2.1/flavors/{}'.format(flavor_id), headers=self.headers)
         if response.status_code == 200:
             flavor = response.json()['flavor']
             return flavor
@@ -113,8 +126,9 @@ class NovaClient(object):
 
     def obtenerDetallesFlavor(self, flavor_id):
         url = f"{self.nova_url}/v2.1/flavors/{flavor_id}"
+        print(url)
+        print(self.headers)
         response = requests.get(url, headers=self.headers)
-
         if response.status_code == 200:
             return response.json()
         else:
@@ -123,7 +137,6 @@ class NovaClient(object):
     def verificarFlavor(self,flavor_name):
         url=f"{self.nova_url}/v2.1/flavors"
         response = requests.get(url, headers=self.headers)
-
         if response.status_code == 200:
             flavors = response.json().get('flavors', [])
             # Buscar el flavor por nombre
@@ -369,8 +382,7 @@ class NovaClient(object):
         #}
         url = f"{self.nova_url}/v2.1/os-security-groups"
         response = requests.get(url, headers=self.headers)
-    
-        
+        print(response.json())
         if response.status_code == 200:
             security_groups = response.json().get('security_groups', [])
             
@@ -1058,8 +1070,6 @@ class NovaClient(object):
 
         instance_data = {
             'server':{
-                
-            
                 'name': nombre,
                 'flavorRef': flavor_id,
                 'imageRef': imagen_id,
@@ -1072,7 +1082,7 @@ class NovaClient(object):
 
         url = f"{self.nova_url}/v2.1/servers"
         response = requests.post(url, headers=self.headers, json=instance_data)
-
+        #print(response.json())
         if response.status_code == 202:
             instance_id = response.json()['server']['id']
             return instance_id
@@ -1083,38 +1093,36 @@ class NovaClient(object):
 
     # Crear una instancia con varias redes
     
-    def create_instance_with_multiple_networks(self, nombre, flavor_id, imagen_id, keypair_id, security_group_id, networks):
-
+    def create_instance_with_multiple_networks(self, nombre, flavor_id, imagen_id,keypair_id, security_group_id,networks):
         network_interfaces = []
-        SalidaInternet=1
-        AccesoInternet=1
-        Listapuertos=[22]
+        # SalidaInternet=1
+        # AccesoInternet=1
+        # Listapuertos=[22]
         # Cambiar   
-        internet="f3fceab1-dd92-414b-9290-e9f1df8d9cfb"
+        internet= "1457923c-6088-46e9-a184-5cd9b8d097d8"
         interface = {'uuid': internet}
         network_interfaces.append(interface)
-
-        for network_id in networks:
-            interface = {'uuid': network_id}
-            network_interfaces.append(interface)
-
+        for networkidentifier in networks.keys():
+            for fixed_ip in networks[networkidentifier]:
+                interface = {
+                    'uuid': networkidentifier,
+                    'fixed_ip': fixed_ip
+                }
+                network_interfaces.append(interface)
         instance_data = {
             'server':{
-                
                 'name': nombre,
                 'flavorRef': flavor_id,
                 'imageRef': imagen_id,
-                'key_name': keypair_id,
-                'security_groups': [{'name': security_group_id}],
                 'networks': network_interfaces
             }
         }
         url = f"{self.nova_url}/v2.1/servers"
         response = requests.post(url, headers=self.headers, json=instance_data)
-        
-
+        print(response.json())
+        instance_id = response.json()['server']['id']
         if response.status_code == 202:
-            instance_id = response.json()['server']['id']
+            """
             while True:
                 estado = self.get_instance_estado(instance_id)
                 if estado == "active":
@@ -1122,12 +1130,11 @@ class NovaClient(object):
                     if SalidaInternet ==1 and AccesoInternet == 1:
                         for i in Listapuertos:
                             #Uso de SSH paramiko
-                            hostname = '10.20.12.188'
+                            hostname = '10.20.12.178'
                             username = 'ubuntu'
                             password = 'ubuntu'
                             port = 22
                             command1 = "echo ubuntu | sudo -S ./puertos_libres.sh "
-                
                             ssh = paramiko.SSHClient()
                             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                             try:
@@ -1137,11 +1144,9 @@ class NovaClient(object):
                                 puerto_libre=stdout.read().decode()
                                 puerto_libre=puerto_libre[:-1]
                                 #print(puerto_libre)
-                                
                                 command3=f"echo ubuntu | sudo -S ./port_forwarding_gateway.sh {puerto_libre}"+ " " + "CREAR"
                                 ssh.exec_command(command3)
                                 #print(i)
-                                
                                 #Uso de SSH paramiko
                                 port = 5001
                                 command2 = "echo ubuntu | sudo -S ./port_forwarding_controller.sh" + " " + str(puerto_libre) + " " + str(IP4) + " " + str(i)+ " " + "CREAR"
@@ -1189,9 +1194,9 @@ class NovaClient(object):
                     elif SalidaInternet==0 and AccesoInternet==1:
                         print("Debe tener Salida a la red (Publica)")
                     break
-            print("[*] Comando para acceder desde Internet a la VM: ssh {usuario}@10.20.12.188 -p "+str(puerto_libre))
+            """
+            #print("[*] Comando para acceder desde Internet a la VM: ssh {usuario}@10.20.12.178 -p "+str(puerto_libre))
             print("[*] Instancia creada de manera exitosa")
-
             return instance_id
         else:
             print("Error al crear la instancia:", response.status_code)

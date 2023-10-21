@@ -77,7 +77,7 @@ class KeystoneAuth(object):
                         'user': {
                             #Cambiar
                             'name': "admin", 
-                            'password': "ronny", 
+                            'password': "ADMIN_PASS", 
                             'domain': {'name': 'Default'}
                         }
                     }
@@ -90,11 +90,10 @@ class KeystoneAuth(object):
                 }
             }
         }
-
         response = requests.post(self.auth_url+"/auth/tokens",
                                 json=auth_data,
                                 headers=self.headers) 
-    
+        #print(response.json())
         if response.status_code == 201:
             self.token = response.headers['X-Subject-Token']
             print("[*] El token se actualizó correctamente\n")

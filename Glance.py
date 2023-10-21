@@ -16,9 +16,9 @@ class GlanceClient(object):
 
         if response.status_code == 200:
             imagenes = response.json().get('images', [])
-            image_info=[]
+            image_info={}
             for image in imagenes:
-                image_info.append([image['id'],image['name']])
+                image_info[image['name']] = image['id']
             return image_info
         else:
             print("Error al listar las imágenes:", response.status_code)
@@ -132,9 +132,9 @@ class GlanceClient(object):
 
         url = f"{self.glance_url}/images/{imagen_id}"
         response = requests.get(url, headers=self.headers)
-
         if response.status_code == 200:
-            informacion_imagen = response.json().get('image', {})
+            data = response.json()
+            informacion_imagen = [data['name'],data['id'],data['disk_format'],data['size'],data['status'],data['created_at']]
             return informacion_imagen
         else:
             print("Error al obtener información de la imagen:", response.status_code)
