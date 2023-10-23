@@ -12,11 +12,13 @@ class TopoConstructor:
         NetworkConstructor.createNetwork(network,neutron,nova)
         #Asignacion de la cantidad de interfaces para el segmento de red
         mapVM_network={}
+        mapVM_response={}
         for vm,interfaces in VMs.items():
             aux = []
             for interface in interfaces:
                 aux.append(interface)
             mapVM_network[vm]={nameNetwork:aux}
+            mapVM_response[vm.name]={nameNetwork:aux}
         for vm,network_interfaces in mapVM_network.items():
             VMConstructor.createVM(vm,network_interfaces,neutron,nova)
-        return mapVM_network
+        return mapVM_response

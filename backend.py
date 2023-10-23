@@ -5,17 +5,32 @@ from Keystone import KeystoneAuth
 from Nova import NovaClient
 from Neutron import NeutronClient
 from Glance import GlanceClient
-from Classes import VM,Network 
+from Classes.VM import VM 
 from TopoHandler import TopoConstructor
 import os
 import uuid
 
 app = FastAPI(title = "Servidor instanciado",description=" Mini Orquestador generador de topologias",version="1.0.1")
 load_dotenv()
-#-- Definición de variables globales
-neutron='initvalues'
-nova='initvalues'
-glance='initvalues'
+
+@app.on_event('startup')
+async def startup():
+    # Instancio valores
+    global neutron,glance,nova
+    # Autenticando con Openstack
+    username = 'admin'
+    password = 'ADMIN_PASS'
+    keystone = KeystoneAuth(username,password)
+    token = keystone.get_token()
+    token = keystone.updateToken()
+    # ADMIN Project ID (cambiar posteriormente)
+    project_admin_id = '9c599a37763940acb61124467d9e423e'
+    token = keystone.get_token_project(project_admin_id)
+    # Instancio los servicios de OpenStack
+    nova = NovaClient(token,username,password)
+    glance = GlanceClient(token)
+    neutron = NeutronClient(token)
+    
 #-----API-----
 @app.post("/createTopology/")
 async def createTopology(body: dict):
@@ -77,29 +92,29 @@ def createTopo1(alumno,tipo):
     listado = nova.list_flavors()
     listado_imagenes = glance.listar_imagenes()
     ## Definicion de VM-UE UERANSIM
-    # vm_nombre_ue = UERANSIM-UE
-    # vm_ue_flavor_id =  Flavor de UE-UERANSIM
-    # vm_image_id_ue = Imagen (snapshot) de la imagen de UERANSIM UE
-    # vm_keypair_ue = keypair ssh (Opcional) de UERANSIM UE
-    # vm_security_groups_ue = security groups base de la VM UERANSIM UE
+    vm_nombre_ue = "UERANSIM-UE-"+alumno
+    vm_ue_flavor_id =  listado['2/2/10'][0]
+    vm_image_id_ue = listado_imagenes['ueransim']
+    vm_keypair_ue = None
+    vm_security_groups_ue = None
     # Creo la VM con los parámetros indicados
-    # vm_ue_ueransim = VM(vm_nombre_ue,vm_ue_flavor_id,vm_image_id_ue,vm_keypair_ue,vm_security_groups_ue)
-    vm_ue_ueransim = 'VM_ueransim_ue'
+    vm_ue_ueransim = VM(vm_nombre_ue,vm_ue_flavor_id,vm_image_id_ue,vm_keypair_ue,vm_security_groups_ue)
+    #vm_ue_ueransim = 'VM_ueransim_ue'
     # asignación de interfaces
     listaVMs[vm_ue_ueransim] = interfaz_UE_UERANSIM
     ## Definicion de VM-gNodeB UERANSIM
-    # vm_nombre_gnb = UERANSIM-GNB
-    # vm_gnb_flavor_id =  Flavor de gnb-UERANSIM
-    # vm_image_gnb = Imagen (snapshot) de la imagen de UERANSIM gnb
-    # vm_keypair_gnb = keypair ssh (Opcional) de UERANSIM gnb
-    # vm_security_groups_gnb = security groups base de la VM UERANSIM gnb
+    vm_nombre_gnb = "UERANSIM-GNB-"+alumno
+    vm_gnb_flavor_id =  listado['2/2/10'][0]
+    vm_image_gnb = listado_imagenes['ueransim']
+    vm_keypair_gnb = None
+    vm_security_groups_gnb = None
     # Creo la VM con los parámetros indicados
-    # vm_gnb_ueransim = VM(vm_nombre_gnb,vm_gnb_flavor_id,vm_image_gnb,vm_keypair_gnb,vm_security_groups_gnb)
-    vm_gnb_ueransim = 'VM_ueransim_gnb'
+    vm_gnb_ueransim = VM(vm_nombre_gnb,vm_gnb_flavor_id,vm_image_gnb,vm_keypair_gnb,vm_security_groups_gnb)
+    #vm_gnb_ueransim = 'VM_ueransim_gnb'
     # asignación de interfaces
     listaVMs[vm_gnb_ueransim] = interfaz_GNB_UERANSIM
     ## Definicion de VM Open5GS Core
-    vm_nombre_o5gs = 'Open5GS-5GC'+alumno
+    vm_nombre_o5gs = 'Open5GS-5GC-'+alumno
     vm_o5gs_flavor_id =  listado['ubuntu'][0]
     vm_image_o5gs = listado_imagenes['open5gs_5GC']
     vm_keypair_o5gs = None
@@ -110,7 +125,7 @@ def createTopo1(alumno,tipo):
     # asignacion de interfaces
     listaVMs[vm_core_open5GS] = interfaz_5GC_CPLANE_OPEN5GS
     ## Definicion de VM Open5GS UPF
-    vm_nombre_o5gs_upf = 'Open5GS-UPF'+alumno
+    vm_nombre_o5gs_upf = 'Open5GS-UPF-'+alumno
     vm_o5gs_upf_flavor_id =  listado['ubuntu'][0]
     vm_image_o5gs_upf = listado_imagenes['open5gs_UPF']
     vm_keypair_o5gs_upf = None
@@ -146,29 +161,29 @@ def createTopo2(alumno,tipo):
     listado = nova.list_flavors()
     listado_imagenes = glance.listar_imagenes()
     ## Definicion de VM-UE srsRAN
-    # vm_nombre_ue = srsRAN-UE
-    # vm_ue_flavor_id =  Flavor de UE-srsRAN
-    # vm_image_id_ue = Imagen (snapshot) de la imagen de srsRAN UE
-    # vm_keypair_ue = keypair ssh (Opcional) de srsRAN UE
-    # vm_security_groups_ue = security groups base de la VM srsRANS UE
+    vm_nombre_ue = "srsRAN-UE-"+alumno
+    vm_ue_flavor_id =  listado['ubuntu'][0]
+    vm_image_id_ue = listado_imagenes['srsran-LTE']
+    vm_keypair_ue = None
+    vm_security_groups_ue = None
     # Creo la VM con los parámetros indicados
-    # vm_ue_srsran = VM(vm_nombre_ue,vm_ue_flavor_id,vm_image_id_ue,vm_keypair_ue,vm_security_groups_ue)
-    vm_ue_srsran = 'VM_srsran_ue'
+    vm_ue_srsran = VM(vm_nombre_ue,vm_ue_flavor_id,vm_image_id_ue,vm_keypair_ue,vm_security_groups_ue)
+    # vm_ue_srsran = 'VM_srsran_ue'
     # asignación de interfaces
     listaVMs[vm_ue_srsran] = interfaz_UE_srsRAN
     ## Definicion de VM-eNodeB srsRAN
-    # vm_nombre_enb = srsRAN-enb
-    # vm_enb_flavor_id =  Flavor de enb-srsRAN
-    # vm_image_enb = Imagen (snapshot) de la imagen de srsRAN enb
-    # vm_keypair_enb = keypair ssh (Opcional) de srsRAN enb
-    # vm_security_groups_enb = security groups base de la VM srsRAN gnb
+    vm_nombre_enb = 'srsRAN-eNb-'+alumno
+    vm_enb_flavor_id =  listado['ubuntu'][0]
+    vm_image_enb = listado_imagenes['srsRAN-LTE']
+    vm_keypair_enb = None
+    vm_security_groups_enb = None
     # Creo la VM con los parámetros indicados
-    # vm_enb_srsRAN = VM(vm_nombre_enb,vm_enb_flavor_id,vm_image_enb,vm_keypair_enb,vm_security_groups_enb)
-    vm_enb_srsRAN = 'vm_enb_srsRAN'
+    vm_enb_srsRAN = VM(vm_nombre_enb,vm_enb_flavor_id,vm_image_enb,vm_keypair_enb,vm_security_groups_enb)
+    # vm_enb_srsRAN = 'vm_enb_srsRAN'
     # asignación de interfaces
     listaVMs[vm_enb_srsRAN] = interfaz_ENB_srsRAN 
     ## Definicion de VM Open5GS Core
-    vm_nombre_o5gs = 'Open5GS-EPC'+alumno
+    vm_nombre_o5gs = 'Open5GS-EPC-'+alumno
     vm_o5gs_flavor_id = listado['ubuntu'][0]
     vm_image_o5gs = listado_imagenes['open5gs_EPC']
     vm_keypair_o5gs = None
@@ -179,7 +194,7 @@ def createTopo2(alumno,tipo):
     # asignacion de interfaces
     listaVMs[vm_core_open5GS] = interfaz_EPC_CPLANE_OPEN5GS
     ## Definicion de VM Open5GS SGWU
-    vm_nombre_o5gs_SGWU = 'Open5GS-SGWU'+alumno
+    vm_nombre_o5gs_SGWU = 'Open5GS-SGWU-'+alumno
     vm_o5gs_sgwu_flavor_id = listado['ubuntu'][0]
     vm_image_o5gs_sgwu = listado_imagenes['open5gs_SGWU']
     vm_keypair_o5gs_sgwu = None
@@ -214,14 +229,14 @@ def createTopo3(alumno,tipo):
     listado = nova.list_flavors()
     listado_imagenes = glance.listar_imagenes()
     ## Definicion de VM-UE srsRAN
-    # vm_nombre_ue = srsRAN-UE
-    # vm_ue_flavor_id =  Flavor de UE-srsRAN
-    # vm_image_id_ue = Imagen (snapshot) de la imagen de srsRAN UE
-    # vm_keypair_ue = keypair ssh (Opcional) de srsRAN UE
-    # vm_security_groups_ue = security groups base de la VM srsRANS UE
+    vm_nombre_ue = 'srsRAN-UE-'+alumno
+    vm_ue_flavor_id =  listado['ubuntu'][0]
+    vm_image_id_ue = listado_imagenes['srsran-LTE']
+    vm_keypair_ue = None
+    vm_security_groups_ue = None
     # Creo la VM con los parámetros indicados
-    # vm_ue_srsran = VM(vm_nombre_ue,vm_ue_flavor_id,vm_image_id_ue,vm_keypair_ue,vm_security_groups_ue)
-    vm_ue_srsran = 'VM_srsran_ue'
+    vm_ue_srsran = VM(vm_nombre_ue,vm_ue_flavor_id,vm_image_id_ue,vm_keypair_ue,vm_security_groups_ue)
+    #vm_ue_srsran = 'VM_srsran_ue'
     # asignación de interfaces
     listaVMs[vm_ue_srsran] = interfaz_UE_srsRAN
     ## Definicion de VM-gNodeB srsRAN
@@ -236,7 +251,7 @@ def createTopo3(alumno,tipo):
     # asignación de interfaces
     listaVMs[vm_gnb_srsRAN] = interfaz_GNB_srsRAN
     ## Definicion de VM Open5GS Core
-    vm_nombre_o5gs = 'Open5GS-Core'+alumno
+    vm_nombre_o5gs = 'Open5GS-Core-'+alumno
     vm_o5gs_flavor_id =  listado['ubuntu'][0]
     vm_image_o5gs = listado_imagenes['open5gs_Monolithic']
     vm_keypair_o5gs = None
@@ -247,14 +262,14 @@ def createTopo3(alumno,tipo):
     # asignacion de interfaces
     listaVMs[vm_core_open5GS] = interfaz_5GC_UCPLANE_OPEN5GS
     ## Definicion de FLEX RIC (Radio Interface Controller)
-    # vm_nombre_flex_ric = flex-ric
-    # vm_flex_ric_flavor_id =  Flavor de flex_ric
-    # vm_image_flex_ric = Imagen (snapshot) de la imagen de flex_ric
-    # vm_keypair_flex_ric = keypair ssh (Opcional) de flex_ric
-    # vm_security_groups_flex_ric = security groups base de la flex_ric
+    vm_nombre_flex_ric = 'flex-RIC-'+alumno
+    vm_flex_ric_flavor_id = listado['ubuntu'][0]
+    vm_image_flex_ric = listado_imagenes['open5gs_Monolithic']
+    vm_keypair_flex_ric = None
+    vm_security_groups_flex_ric = None
     # Creo la VM con los parámetros indicados
-    # vm_flex_ric = VM(vm_nombre_flex_ric,vm_flex_ric_flavor_id,vm_image_flex_ric,vm_keypair_flex_ric,vm_security_groups_flex_ric)
-    vm_flex_ric = 'VM_flex_ric'
+    vm_flex_ric = VM(vm_nombre_flex_ric,vm_flex_ric_flavor_id,vm_image_flex_ric,vm_keypair_flex_ric,vm_security_groups_flex_ric)
+    # vm_flex_ric = 'VM_flex_ric'
     # asignacion de interfaces:
     listaVMs[vm_flex_ric] = interfaz_flex_RIC
     # Construyo la topologia
@@ -282,14 +297,14 @@ def createTopo4(alumno,tipo):
     listado = nova.list_flavors()
     listado_imagenes = glance.listar_imagenes()
     ## Definicion de VM-UE srsRAN
-    # vm_nombre_ue = srsRAN-UE
-    # vm_ue_flavor_id =  Flavor de UE-srsRAN
-    # vm_image_id_ue = Imagen (snapshot) de la imagen de srsRAN UE
-    # vm_keypair_ue = keypair ssh (Opcional) de srsRAN UE
-    # vm_security_groups_ue = security groups base de la VM srsRANS UE
+    vm_nombre_ue = 'srsRAN-UE-'+alumno
+    vm_ue_flavor_id = listado['ubuntu'][0]
+    vm_image_id_ue = listado_imagenes['srsran-LTE']
+    vm_keypair_ue = None
+    vm_security_groups_ue = None
     # Creo la VM con los parámetros indicados
-    # vm_ue_srsran = VM(vm_nombre_ue,vm_ue_flavor_id,vm_image_id_ue,vm_keypair_ue,vm_security_groups_ue)
-    vm_ue_srsran = 'VM_srsran_ue'
+    vm_ue_srsran = VM(vm_nombre_ue,vm_ue_flavor_id,vm_image_id_ue,vm_keypair_ue,vm_security_groups_ue)
+    #vm_ue_srsran = 'VM_srsran_ue'
     # asignación de interfaces
     listaVMs[vm_ue_srsran] = interfaz_UE_srsRAN
     ## Definicion de VM-gNodeB srsRAN
@@ -304,7 +319,7 @@ def createTopo4(alumno,tipo):
     # asignación de interfaces
     listaVMs[vm_gnb_srsRAN] = interfaz_GNB_srsRAN 
     ## Definicion de VM Open5GS Core
-    vm_nombre_o5gs = 'Open5GS-5GC'+alumno
+    vm_nombre_o5gs = 'Open5GS-5GC-'+alumno
     vm_o5gs_flavor_id =  listado['ubuntu'][0]
     vm_image_o5gs = listado_imagenes['open5gs_5GC']
     vm_keypair_o5gs = None
@@ -315,7 +330,7 @@ def createTopo4(alumno,tipo):
     # asignacion de interfaces
     listaVMs[vm_core_open5GS] = interfaz_5GC_CPLANE_OPEN5GS
     ## Definicion de VM Open5GS Core
-    vm_nombre_o5gs_upf = 'Open5GS-UPF'+alumno
+    vm_nombre_o5gs_upf = 'Open5GS-UPF-'+alumno
     vm_o5gs_upf_flavor_id =  listado['ubuntu'][0]
     vm_image_o5gs_upf = listado_imagenes['open5gs_UPF']
     vm_keypair_o5gs_upf = None
@@ -335,19 +350,6 @@ def createTopo4(alumno,tipo):
     return bodyResponse
 
 if __name__ == "__main__":
-    # Autenticando con Openstack
-    username = 'admin'
-    password = 'ADMIN_PASS'
-    keystone = KeystoneAuth(username,password)
-    token = keystone.get_token()
-    token = keystone.updateToken()
-    # ADMIN Project ID (cambiar posteriormente)
-    project_admin_id = '9c599a37763940acb61124467d9e423e'
-    token = keystone.get_token_project(project_admin_id)
-    # Instancio los servicios de OpenStack
-    nova = NovaClient(token,username,password)
-    glance = GlanceClient(token)
-    neutron = NeutronClient(token)
     import uvicorn
     #Inicalizando servicio de API
     uvicorn.run("backend:app",host="10.20.12.178",ssl_keyfile=os.environ.get('SSL_KEYFILE'),ssl_certfile=os.environ.get('SSL_CERTFILE'),port=8888,reload=True)
