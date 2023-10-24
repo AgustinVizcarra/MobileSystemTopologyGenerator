@@ -240,14 +240,14 @@ def createTopo3(alumno,tipo):
     # asignación de interfaces
     listaVMs[vm_ue_srsran] = interfaz_UE_srsRAN
     ## Definicion de VM-gNodeB srsRAN
-    # vm_nombre_gnb = srsRAN-gnb
-    # vm_gnb_flavor_id =  Flavor de gnb-srsRAN
-    # vm_image_gnb = Imagen (snapshot) de la imagen de srsRAN gnb
-    # vm_keypair_gnb = keypair ssh (Opcional) de srsRAN gnb
-    # vm_security_groups_gnb = security groups base de la VM srsRAN gnb
+    vm_nombre_gnb = 'srsRAN-gNb-E2-'+alumno
+    vm_gnb_flavor_id = listado['ubuntu'][0]
+    vm_image_gnb = listado_imagenes['srsran-E2']
+    vm_keypair_gnb = None
+    vm_security_groups_gnb = None
     # Creo la VM con los parámetros indicados
-    # vm_gnb_srsRAN = VM(vm_nombre_gnb,vm_gnb_flavor_id,vm_image_gnb,vm_keypair_gnb,vm_security_groups_gnb)
-    vm_gnb_srsRAN = 'vm_gnb_srsRAN'
+    vm_gnb_srsRAN = VM(vm_nombre_gnb,vm_gnb_flavor_id,vm_image_gnb,vm_keypair_gnb,vm_security_groups_gnb)
+    #vm_gnb_srsRAN = 'vm_gnb_srsRAN'
     # asignación de interfaces
     listaVMs[vm_gnb_srsRAN] = interfaz_GNB_srsRAN
     ## Definicion de VM Open5GS Core
@@ -264,7 +264,7 @@ def createTopo3(alumno,tipo):
     ## Definicion de FLEX RIC (Radio Interface Controller)
     vm_nombre_flex_ric = 'flex-RIC-'+alumno
     vm_flex_ric_flavor_id = listado['ubuntu'][0]
-    vm_image_flex_ric = listado_imagenes['open5gs_Monolithic']
+    vm_image_flex_ric = listado_imagenes['flexRIC']
     vm_keypair_flex_ric = None
     vm_security_groups_flex_ric = None
     # Creo la VM con los parámetros indicados
@@ -308,14 +308,14 @@ def createTopo4(alumno,tipo):
     # asignación de interfaces
     listaVMs[vm_ue_srsran] = interfaz_UE_srsRAN
     ## Definicion de VM-gNodeB srsRAN
-    # vm_nombre_gnb = srsRAN-gnb
-    # vm_gnb_flavor_id =  Flavor de gnb-srsRAN
-    # vm_image_gnb = Imagen (snapshot) de la imagen de srsRAN gnb
-    # vm_keypair_gnb = keypair ssh (Opcional) de srsRAN gnb
-    # vm_security_groups_gnb = security groups base de la VM srsRAN gnb
+    vm_nombre_gnb = 'srsRAN-gNb-'+alumno
+    vm_gnb_flavor_id =  listado['ubuntu'][0]
+    vm_image_gnb = listado_imagenes['srsran-NR']
+    vm_keypair_gnb = None
+    vm_security_groups_gnb = None
     # Creo la VM con los parámetros indicados
-    # vm_gnb_srsRAN = VM(vm_nombre_gnb,vm_gnb_flavor_id,vm_image_gnb,vm_keypair_gnb,vm_security_groups_gnb)
-    vm_gnb_srsRAN = 'vm_gnb_srsRAN'
+    vm_gnb_srsRAN = VM(vm_nombre_gnb,vm_gnb_flavor_id,vm_image_gnb,vm_keypair_gnb,vm_security_groups_gnb)
+    # vm_gnb_srsRAN = 'vm_gnb_srsRAN'
     # asignación de interfaces
     listaVMs[vm_gnb_srsRAN] = interfaz_GNB_srsRAN 
     ## Definicion de VM Open5GS Core
