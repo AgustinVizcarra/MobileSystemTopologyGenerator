@@ -6,6 +6,7 @@ import json
 import paramiko
 import os
 import ipaddress
+import subprocess
 from AuxFunctions import validar_direccion_ip2
 ##########FLAVOR###########
 class NovaClient(object):
@@ -866,13 +867,7 @@ class NovaClient(object):
         if response.status_code == 200:
             server_details = response.json().get('server', {})
             addresses = server_details.get('addresses', {})
-            for network, ip_list in addresses.items():
-                for ip in ip_list:
-                    if validar_direccion_ip2(ip.get('addr')):
-                        IP=ip.get('addr')
-                        return IP
-
-    
+            return addresses['provider'][0]['addr']
         else:
             print("Error al obtener los detalles del servidor:", response.status_code)
             
@@ -934,21 +929,16 @@ class NovaClient(object):
                     else:
                         puerto_libre=puerto_libre.split(" ")
                     #print(puerto_libre)
-                    
                     puerto_libre[1] = puerto_libre[1].replace("\n","")
                     #print(puerto_libre)
-            
-                    
                     command2 = "echo ubuntu | sudo -S ./port_forwarding_controller.sh" + " " + str(puerto_libre[0]) + " " + str(ipv4) + " " + str(puerto_libre[1])+ " " + "DELETE"
                     #print(command2)
                     ssh.exec_command(command2)
-
                     #Uso de SSH paramiko
                     port = 22
                     command3=f"echo ubuntu | sudo -S ./port_forwarding_gateway.sh {puerto_libre[0]}"+ " " + "DELETE"
                     ssh = paramiko.SSHClient()
                     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                    
                     try:
                         ssh.connect(hostname, port, username, password)
 
@@ -957,20 +947,12 @@ class NovaClient(object):
                         #C2=stdout.read().decode()
                         #ssh.exec_command(command3)
                     #    print(command3)
-
                     except paramiko.AuthenticationException:
-
                         print("Error de autenticación. Verifica las credenciales de SSH.")
-
                     except paramiko.SSHException as ssh_exception:
-
                         print("Error de conexión SSH:", str(ssh_exception))
-
                     finally:
-
                         ssh.close()
-            
-                
                 except paramiko.AuthenticationException:
 
                     print("Error de autenticación. Verifica las credenciales de SSH.")
@@ -1095,9 +1077,9 @@ class NovaClient(object):
     
     def create_instance_with_multiple_networks(self, nombre, flavor_id, imagen_id,keypair_id, security_group_id,networks):
         network_interfaces = []
-        # SalidaInternet=1
-        # AccesoInternet=1
-        # Listapuertos=[22]
+        SalidaInternet=1
+        AccesoInternet=1
+        Listapuertos=[22]
         # Cambiar   
         internet= "1457923c-6088-46e9-a184-5cd9b8d097d8"
         interface = {'uuid': internet}
@@ -1119,85 +1101,37 @@ class NovaClient(object):
         }
         url = f"{self.nova_url}/v2.1/servers"
         response = requests.post(url, headers=self.headers, json=instance_data)
-        print(response.json())
-        instance_id = response.json()['server']['id']
+        instance_id = response.json()['server']['id']    
         if response.status_code == 202:
-            """
             while True:
                 estado = self.get_instance_estado(instance_id)
                 if estado == "active":
                     IP4=self.get_instance_ip(instance_id)
                     if SalidaInternet ==1 and AccesoInternet == 1:
                         for i in Listapuertos:
-                            #Uso de SSH paramiko
-                            hostname = '10.20.12.178'
-                            username = 'ubuntu'
-                            password = 'ubuntu'
-                            port = 22
                             command1 = "echo ubuntu | sudo -S ./puertos_libres.sh "
-                            ssh = paramiko.SSHClient()
-                            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                            process_find_port = subprocess.Popen(command1, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                            output, error = process_find_port.communicate()
                             try:
-                                ssh.connect(hostname, port, username, password)
-                                #AL ejecutar ese comando se recibirá un puerto libre
-                                stdin, stdout, stderr = ssh.exec_command(command1)
-                                puerto_libre=stdout.read().decode()
+                                puerto_libre = output.decode('utf-8')
                                 puerto_libre=puerto_libre[:-1]
-                                #print(puerto_libre)
-                                command3=f"echo ubuntu | sudo -S ./port_forwarding_gateway.sh {puerto_libre}"+ " " + "CREAR"
-                                ssh.exec_command(command3)
-                                #print(i)
-                                #Uso de SSH paramiko
-                                port = 5001
+                                print(puerto_libre)
                                 command2 = "echo ubuntu | sudo -S ./port_forwarding_controller.sh" + " " + str(puerto_libre) + " " + str(IP4) + " " + str(i)+ " " + "CREAR"
-                                #print(command2)
-                                ssh = paramiko.SSHClient()
-                                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                                
+                                process_forward_in_controller = subprocess.Popen(command2, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                                 try:
-                                    ssh.connect(hostname, port, username, password)
-
-                                    #AL ejecutar ese comando se recibirá un puerto libre
-                                    stdin, stdout, stderr=ssh.exec_command(command2)
-                                    C2=stdout.read().decode()
-                                #    print(C2)
-
-                                except paramiko.AuthenticationException:
-
-                                    print("Error de autenticación. Verifica las credenciales de SSH.")
-
-                                except paramiko.SSHException as ssh_exception:
-
-                                    print("Error de conexión SSH:", str(ssh_exception))
-
-                                finally:
-
-                                    ssh.close()
-                            
-                            except paramiko.AuthenticationException:
-
-                                print("Error de autenticación. Verifica las credenciales de SSH.")
-
-                            except paramiko.SSHException as ssh_exception:
-
-                                print("Error de conexión SSH:", str(ssh_exception))
-
-                            finally:
-
-                                ssh.close()
-                        
-                        #self.ssh_connect(hostname, username, password, port,command)
-                        #self.ssh_connect(hostname,username,password,port,command)
-                        #thread = threading.Thread(target=subprocess.call(command, shell=True), args=(command,))
-                        #thread.start()
-
+                                    output,error = process_forward_in_controller.communicate()
+                                    C2 = output.decode('utf-8')
+                                    print(C2)
+                                except Exception as error:
+                                    print("Un error a ocurrido: "+error)
+                            except Exception as error:
+                                print("Un error ha ocurrido: "+error)
                     elif SalidaInternet==0 and AccesoInternet==1:
                         print("Debe tener Salida a la red (Publica)")
                     break
-            """
-            #print("[*] Comando para acceder desde Internet a la VM: ssh {usuario}@10.20.12.178 -p "+str(puerto_libre))
+            print("[*] Comando para acceder desde Internet a la VM: ssh {usuario}@10.20.12.178 -p "+str(puerto_libre))
             print("[*] Instancia creada de manera exitosa")
-            return instance_id
+            return [nombre,'10.20.12.178',IP4,puerto_libre]
         else:
             print("Error al crear la instancia:", response.status_code)
             return None

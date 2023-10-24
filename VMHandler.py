@@ -12,8 +12,9 @@ class VMConstructor:
             for ips in networks.values():
                 aux.append(ips)
             net_id[neutron.getNetworkIDbyName(n)] = ips 
-        nova.create_instance_with_multiple_networks(nombre=VM.name,flavor_id = VM.flavorID, imagen_id = VM.imageID, keypair_id = VM.keyPairID, security_group_id = VM.securitygroupID, networks = net_id)
-
+        puerto_asignado=nova.create_instance_with_multiple_networks(nombre=VM.name,flavor_id = VM.flavorID, imagen_id = VM.imageID, keypair_id = VM.keyPairID, security_group_id = VM.securitygroupID, networks = net_id)
+        return puerto_asignado
+        
     def editVM(VM: VM,network: Network,neutron: NeutronClient,nova: NovaClient):
         vm_id = nova.get_instance_id(vm_name=VM.name)
         network_id = neutron.getNetworkIDbyName(network)

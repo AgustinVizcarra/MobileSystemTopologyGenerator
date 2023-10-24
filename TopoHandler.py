@@ -18,7 +18,12 @@ class TopoConstructor:
             for interface in interfaces:
                 aux.append(interface)
             mapVM_network[vm]={nameNetwork:aux}
-            mapVM_response[vm.name]={nameNetwork:aux}
+            #mapVM_response[vm.name]={nameNetwork:aux}
         for vm,network_interfaces in mapVM_network.items():
-            VMConstructor.createVM(vm,network_interfaces,neutron,nova)
+            outputdata=VMConstructor.createVM(vm,network_interfaces,neutron,nova)
+            data={}
+            data['network']=network_interfaces
+            data['IPAccess']=outputdata[1]+":"+outputdata[3]
+            data['IPMgmt']=outputdata[2]
+            mapVM_response[vm.name]=data
         return mapVM_response
