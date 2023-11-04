@@ -94,7 +94,7 @@ def createTopo1(alumno,tipo):
     ## Definicion de VM-UE UERANSIM
     vm_nombre_ue = "UERANSIM-UE-"+alumno
     vm_ue_flavor_id =  listado['2/2/10'][0]
-    vm_image_id_ue = listado_imagenes['ueransim']
+    vm_image_id_ue = listado_imagenes['UERANSIM-UE']
     vm_keypair_ue = None
     vm_security_groups_ue = None
     # Creo la VM con los parámetros indicados
@@ -105,7 +105,7 @@ def createTopo1(alumno,tipo):
     ## Definicion de VM-gNodeB UERANSIM
     vm_nombre_gnb = "UERANSIM-GNB-"+alumno
     vm_gnb_flavor_id =  listado['2/2/10'][0]
-    vm_image_gnb = listado_imagenes['ueransim']
+    vm_image_gnb = listado_imagenes['UERANSIM-GNB']
     vm_keypair_gnb = None
     vm_security_groups_gnb = None
     # Creo la VM con los parámetros indicados
@@ -116,7 +116,7 @@ def createTopo1(alumno,tipo):
     ## Definicion de VM Open5GS Core
     vm_nombre_o5gs = 'Open5GS-5GC-'+alumno
     vm_o5gs_flavor_id =  listado['ubuntu'][0]
-    vm_image_o5gs = listado_imagenes['open5gs_5GC']
+    vm_image_o5gs = listado_imagenes['Open5GS-5GC']
     vm_keypair_o5gs = None
     vm_security_groups_o5gs = None
     # Creo la VM con los parámetros indicados
@@ -127,7 +127,7 @@ def createTopo1(alumno,tipo):
     ## Definicion de VM Open5GS UPF
     vm_nombre_o5gs_upf = 'Open5GS-UPF-'+alumno
     vm_o5gs_upf_flavor_id =  listado['ubuntu'][0]
-    vm_image_o5gs_upf = listado_imagenes['open5gs_UPF']
+    vm_image_o5gs_upf = listado_imagenes['Open5GS-UPF-Corp']
     vm_keypair_o5gs_upf = None
     vm_security_groups_o5gs_upf = None
     # Creo la VM con los parámetros indicados
@@ -321,7 +321,7 @@ def createTopo4(alumno,tipo):
     ## Definicion de VM Open5GS Core
     vm_nombre_o5gs = 'Open5GS-5GC-'+alumno
     vm_o5gs_flavor_id =  listado['ubuntu'][0]
-    vm_image_o5gs = listado_imagenes['open5gs_5GC']
+    vm_image_o5gs = listado_imagenes['Open5GS-5GC']
     vm_keypair_o5gs = None
     vm_security_groups_o5gs = None
     # Creo la VM con los parámetros indicados
