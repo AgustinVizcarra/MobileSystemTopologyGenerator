@@ -156,14 +156,13 @@ def createTopo2(alumno,tipo):
     # srsRAN LTE + Open5GS
     interfaz_UE_srsRAN = ['192.168.0.122']
     interfaz_ENB_srsRAN = ['192.168.0.121']
-    interfaz_EPC_CPLANE_OPEN5GS = ['192.168.0.111','192.168.0.112']
-    interfaz_EPC_UPLANE_OPEN5GS = ['192.168.0.113','192.168.0.114']
+    interfaz_EPC_CPLANE_OPEN5GS = ['192.168.0.111']
     listado = nova.list_flavors()
     listado_imagenes = glance.listar_imagenes()
     ## Definicion de VM-UE srsRAN
     vm_nombre_ue = "srsRAN-UE-"+alumno
     vm_ue_flavor_id =  listado['ubuntu'][0]
-    vm_image_id_ue = listado_imagenes['srsran-LTE']
+    vm_image_id_ue = listado_imagenes['srsRAN-LTE']
     vm_keypair_ue = None
     vm_security_groups_ue = None
     # Creo la VM con los parámetros indicados
@@ -182,10 +181,10 @@ def createTopo2(alumno,tipo):
     # vm_enb_srsRAN = 'vm_enb_srsRAN'
     # asignación de interfaces
     listaVMs[vm_enb_srsRAN] = interfaz_ENB_srsRAN 
-    ## Definicion de VM Open5GS Core
+    ## Definicion de VM Open5GS Core EPC
     vm_nombre_o5gs = 'Open5GS-EPC-'+alumno
     vm_o5gs_flavor_id = listado['ubuntu'][0]
-    vm_image_o5gs = listado_imagenes['open5gs_EPC']
+    vm_image_o5gs = listado_imagenes['Open5GS-EPC']
     vm_keypair_o5gs = None
     vm_security_groups_o5gs = None
     # Creo la VM con los parámetros indicados
@@ -193,17 +192,6 @@ def createTopo2(alumno,tipo):
     #vm_core_open5GS = 'VM_open5gs_core'
     # asignacion de interfaces
     listaVMs[vm_core_open5GS] = interfaz_EPC_CPLANE_OPEN5GS
-    ## Definicion de VM Open5GS SGWU
-    vm_nombre_o5gs_SGWU = 'Open5GS-SGWU-'+alumno
-    vm_o5gs_sgwu_flavor_id = listado['ubuntu'][0]
-    vm_image_o5gs_sgwu = listado_imagenes['open5gs_SGWU']
-    vm_keypair_o5gs_sgwu = None
-    vm_security_groups_o5gs_sgwu = None
-    # Creo la VM con los parámetros indicados
-    vm_sgwu_open5GS = VM(vm_nombre_o5gs_SGWU,vm_o5gs_sgwu_flavor_id,vm_image_o5gs_sgwu,vm_keypair_o5gs_sgwu,vm_security_groups_o5gs_sgwu)
-    #vm_core_open5GS_SGWU = 'VM_open5gs_sgwu'
-    # asignacion de interfaces:
-    listaVMs[vm_sgwu_open5GS] = interfaz_EPC_UPLANE_OPEN5GS
     # Construyo la topologia
     bodyResponse = {}
     bodyResponse['codigo'] = alumno
