@@ -406,4 +406,3 @@ if __name__ == "__main__":
     import uvicorn
     #Inicalizando servicio de API
     uvicorn.run("backend:app",host="10.20.12.178",ssl_keyfile=os.environ.get('SSL_KEYFILE'),ssl_certfile=os.environ.get('SSL_CERTFILE'),port=8888,reload=True)
-    
