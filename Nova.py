@@ -1086,10 +1086,15 @@ class NovaClient(object):
         network_interfaces.append(interface)
         for networkidentifier in networks.keys():
             for fixed_ip in networks[networkidentifier]:
-                interface = {
-                    'uuid': networkidentifier,
-                    'fixed_ip': fixed_ip
-                }
+                if fixed_ip == '':
+                    interface = {
+                        'uuid': networkidentifier
+                    }
+                else:
+                    interface = {
+                        'uuid': networkidentifier,
+                        'fixed_ip': fixed_ip
+                    }
                 network_interfaces.append(interface)
         instance_data = {
             'server':{

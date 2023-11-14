@@ -31,7 +31,7 @@ async def startup():
     glance = GlanceClient(token)
     neutron = NeutronClient(token)
     
-#-----API-----
+#-----API-----#
 @app.post("/createTopology/")
 async def createTopology(body: dict):
     if not body:
@@ -53,6 +53,9 @@ async def createTopology(body: dict):
                 #case 4:
                     #data = createTopo4(body['codigo'],body['tipo'])
                     #return JSONResponse(content=data,status_code=200)
+                #case 5:
+                    #data = createTopo5(body['codigo'],body['tipo'])
+                    #return JSONResponse(content=data,status_code=200)
                 #case _:
                     #data = {"mensaje": "Se envió un formato de dato inválido o no se tiene registro de esta topologia"}
                     #return JSONResponse(content=data,status_code=400)
@@ -67,6 +70,9 @@ async def createTopology(body: dict):
                 return JSONResponse(content=data,status_code=200)                            
             elif body['tipo'] == 4:
                 data = createTopo4(body['codigo'],body['tipo'])
+                return JSONResponse(content=data,status_code=200)
+            elif body['tipo'] == 5:
+                data = createTopo5(body['codigo'],body['tipo'])
                 return JSONResponse(content=data,status_code=200)
             else:
                 data = {"mensaje": "Se envió un formato de dato inválido o no se tiene registro de esta topologia"}
@@ -99,7 +105,6 @@ def createTopo1(alumno,tipo):
     vm_security_groups_ue = None
     # Creo la VM con los parámetros indicados
     vm_ue_ueransim = VM(vm_nombre_ue,vm_ue_flavor_id,vm_image_id_ue,vm_keypair_ue,vm_security_groups_ue)
-    #vm_ue_ueransim = 'VM_ueransim_ue'
     # asignación de interfaces
     listaVMs[vm_ue_ueransim] = interfaz_UE_UERANSIM
     ## Definicion de VM-gNodeB UERANSIM
@@ -110,7 +115,6 @@ def createTopo1(alumno,tipo):
     vm_security_groups_gnb = None
     # Creo la VM con los parámetros indicados
     vm_gnb_ueransim = VM(vm_nombre_gnb,vm_gnb_flavor_id,vm_image_gnb,vm_keypair_gnb,vm_security_groups_gnb)
-    #vm_gnb_ueransim = 'VM_ueransim_gnb'
     # asignación de interfaces
     listaVMs[vm_gnb_ueransim] = interfaz_GNB_UERANSIM
     ## Definicion de VM Open5GS Core
@@ -121,7 +125,6 @@ def createTopo1(alumno,tipo):
     vm_security_groups_o5gs = None
     # Creo la VM con los parámetros indicados
     vm_core_open5GS = VM(vm_nombre_o5gs,vm_o5gs_flavor_id,vm_image_o5gs,vm_keypair_o5gs,vm_security_groups_o5gs)
-    #vm_core_open5GS = 'VM_open5gs_core'
     # asignacion de interfaces
     listaVMs[vm_core_open5GS] = interfaz_5GC_CPLANE_OPEN5GS
     ## Definicion de VM Open5GS UPF
@@ -132,7 +135,6 @@ def createTopo1(alumno,tipo):
     vm_security_groups_o5gs_upf = None
     # Creo la VM con los parámetros indicados
     vm_upf_open5GS = VM(vm_nombre_o5gs_upf,vm_o5gs_upf_flavor_id,vm_image_o5gs_upf,vm_keypair_o5gs_upf,vm_security_groups_o5gs_upf)
-    #vm_core_open5GS_UPF = 'VM_open5gs_upf'
     # asignacion de interfaces:
     listaVMs[vm_upf_open5GS] = interfaz_5GC_UPLANE_OPEN5GS
     # Definicion del arreglo 
@@ -167,7 +169,6 @@ def createTopo2(alumno,tipo):
     vm_security_groups_ue = None
     # Creo la VM con los parámetros indicados
     vm_ue_srsran = VM(vm_nombre_ue,vm_ue_flavor_id,vm_image_id_ue,vm_keypair_ue,vm_security_groups_ue)
-    # vm_ue_srsran = 'VM_srsran_ue'
     # asignación de interfaces
     listaVMs[vm_ue_srsran] = interfaz_UE_srsRAN
     ## Definicion de VM-eNodeB srsRAN
@@ -178,7 +179,6 @@ def createTopo2(alumno,tipo):
     vm_security_groups_enb = None
     # Creo la VM con los parámetros indicados
     vm_enb_srsRAN = VM(vm_nombre_enb,vm_enb_flavor_id,vm_image_enb,vm_keypair_enb,vm_security_groups_enb)
-    # vm_enb_srsRAN = 'vm_enb_srsRAN'
     # asignación de interfaces
     listaVMs[vm_enb_srsRAN] = interfaz_ENB_srsRAN 
     ## Definicion de VM Open5GS Core EPC
@@ -189,7 +189,6 @@ def createTopo2(alumno,tipo):
     vm_security_groups_o5gs = None
     # Creo la VM con los parámetros indicados
     vm_core_open5GS = VM(vm_nombre_o5gs,vm_o5gs_flavor_id,vm_image_o5gs,vm_keypair_o5gs,vm_security_groups_o5gs)
-    #vm_core_open5GS = 'VM_open5gs_core'
     # asignacion de interfaces
     listaVMs[vm_core_open5GS] = interfaz_EPC_CPLANE_OPEN5GS
     # Construyo la topologia
@@ -224,7 +223,6 @@ def createTopo3(alumno,tipo):
     vm_security_groups_ue = None
     # Creo la VM con los parámetros indicados
     vm_ue_srsran = VM(vm_nombre_ue,vm_ue_flavor_id,vm_image_id_ue,vm_keypair_ue,vm_security_groups_ue)
-    #vm_ue_srsran = 'VM_srsran_ue'
     # asignación de interfaces
     listaVMs[vm_ue_srsran] = interfaz_UE_srsRAN
     ## Definicion de VM-gNodeB srsRAN
@@ -235,7 +233,6 @@ def createTopo3(alumno,tipo):
     vm_security_groups_gnb = None
     # Creo la VM con los parámetros indicados
     vm_gnb_srsRAN = VM(vm_nombre_gnb,vm_gnb_flavor_id,vm_image_gnb,vm_keypair_gnb,vm_security_groups_gnb)
-    #vm_gnb_srsRAN = 'vm_gnb_srsRAN'
     # asignación de interfaces
     listaVMs[vm_gnb_srsRAN] = interfaz_GNB_srsRAN
     ## Definicion de VM Open5GS Core
@@ -246,7 +243,6 @@ def createTopo3(alumno,tipo):
     vm_security_groups_o5gs = None
     # Creo la VM con los parámetros indicados
     vm_core_open5GS = VM(vm_nombre_o5gs,vm_o5gs_flavor_id,vm_image_o5gs,vm_keypair_o5gs,vm_security_groups_o5gs)
-    #vm_core_open5GS = 'VM_open5gs_core'
     # asignacion de interfaces
     listaVMs[vm_core_open5GS] = interfaz_5GC_UCPLANE_OPEN5GS
     ## Definicion de FLEX RIC (Radio Interface Controller)
@@ -257,7 +253,6 @@ def createTopo3(alumno,tipo):
     vm_security_groups_flex_ric = None
     # Creo la VM con los parámetros indicados
     vm_flex_ric = VM(vm_nombre_flex_ric,vm_flex_ric_flavor_id,vm_image_flex_ric,vm_keypair_flex_ric,vm_security_groups_flex_ric)
-    # vm_flex_ric = 'VM_flex_ric'
     # asignacion de interfaces:
     listaVMs[vm_flex_ric] = interfaz_flex_RIC
     # Construyo la topologia
@@ -292,31 +287,26 @@ def createTopo4(alumno,tipo):
     vm_security_groups_ue = None
     # Creo la VM con los parámetros indicados
     vm_ue_srsran = VM(vm_nombre_ue,vm_ue_flavor_id,vm_image_id_ue,vm_keypair_ue,vm_security_groups_ue)
-    #vm_ue_srsran = 'VM_srsran_ue'
     # asignación de interfaces
     listaVMs[vm_ue_srsran] = interfaz_UE_srsRAN
     ## Definicion de VM-gNodeB srsRAN
     vm_nombre_gnb = 'srsRAN-gNb-'+alumno
     vm_gnb_flavor_id =  listado['ubuntu'][0]
-    # OJO
     vm_image_gnb = listado_imagenes['SRSRAN-NR']
     vm_keypair_gnb = None
     vm_security_groups_gnb = None
     # Creo la VM con los parámetros indicados
     vm_gnb_srsRAN = VM(vm_nombre_gnb,vm_gnb_flavor_id,vm_image_gnb,vm_keypair_gnb,vm_security_groups_gnb)
-    # vm_gnb_srsRAN = 'vm_gnb_srsRAN'
     # asignación de interfaces
     listaVMs[vm_gnb_srsRAN] = interfaz_GNB_srsRAN 
     ## Definicion de VM Open5GS Core
     vm_nombre_o5gs = 'Open5GS-5GC-'+alumno
     vm_o5gs_flavor_id =  listado['ubuntu'][0]
-    # OJO
     vm_image_o5gs = listado_imagenes['Open5GS-5GC']
     vm_keypair_o5gs = None
     vm_security_groups_o5gs = None
     # Creo la VM con los parámetros indicados
     vm_core_open5GS = VM(vm_nombre_o5gs,vm_o5gs_flavor_id,vm_image_o5gs,vm_keypair_o5gs,vm_security_groups_o5gs)
-    #vm_core_open5GS = 'VM_open5gs_core'
     # asignacion de interfaces
     listaVMs[vm_core_open5GS] = interfaz_5GC_CPLANE_OPEN5GS
     ## Definicion de VM Open5GS Core
@@ -327,7 +317,6 @@ def createTopo4(alumno,tipo):
     vm_security_groups_o5gs_upf = None
     # Creo la VM con los parámetros indicados
     vm_upf_open5GS = VM(vm_nombre_o5gs_upf,vm_o5gs_upf_flavor_id,vm_image_o5gs_upf,vm_keypair_o5gs_upf,vm_security_groups_o5gs_upf)
-    #vm_core_open5GS_UPF = 'VM_open5gs_upf'
     # asignacion de interfaces:
     listaVMs[vm_upf_open5GS] = interfaz_5GC_UPLANE_OPEN5GS
     # Construyo la topologia
@@ -338,7 +327,81 @@ def createTopo4(alumno,tipo):
     responseValue=TopoConstructor().DefaultTopologyConstructor(listaVMs,CIDR,neutron,nova)
     bodyResponse['topologyValues'] = responseValue
     return bodyResponse
-
+# Network Slicing Open5GS-UERANSIM 
+def createTopo5(alumno,tipo):
+    #LLamamos los servicios de neutron,glance y nova
+    global neutron,glance,nova
+    # Para esto se considerará la siguiente topología 
+    CIDR = "192.168.0.0/24"
+    Topology_ID = str(uuid.uuid4())
+    listaVMs = {}
+    # Posteriormente definimos las siguientes VM's que conformarán la topología
+    # UERANSIM + Open5GS
+    interfaz_UE_UERANSIM = ['192.168.0.132']
+    interfaz_GNB_UERANSIM = ['192.168.0.131']
+    interfaz_5GC_CPLANE_OPEN5GS = ['192.168.0.111']
+    interfaz_5GC_UPLANE_1_OPEN5GS = ['192.168.0.114']
+    interfaz_5GC_UPLANE_2_OPEN5GS = ['192.168.0.115']
+    listado = nova.list_flavors()
+    listado_imagenes = glance.listar_imagenes()
+    ## Definicion de VM-UE srsRAN
+    vm_nombre_ue = 'ueransim-ue-'+alumno
+    vm_ue_flavor_id = listado['2/2/10'][0]
+    vm_image_id_ue = listado_imagenes['UERANSIM-NS-UE']
+    vm_keypair_ue = None
+    vm_security_groups_ue = None
+    # Creo la VM con los parámetros indicados
+    vm_ue_ueransim = VM(vm_nombre_ue,vm_ue_flavor_id,vm_image_id_ue,vm_keypair_ue,vm_security_groups_ue)
+    # asignación de interfaces
+    listaVMs[vm_ue_ueransim] = interfaz_UE_UERANSIM
+    ## Definicion de VM-gNodeB srsRAN
+    vm_nombre_gnb = 'ueransim-gnb-'+alumno
+    vm_gnb_flavor_id =  listado['2/2/10'][0]
+    vm_image_gnb = listado_imagenes['UERANSIM-NS-GNB']
+    vm_keypair_gnb = None
+    vm_security_groups_gnb = None
+    # Creo la VM con los parámetros indicados
+    vm_gnb_ueransim = VM(vm_nombre_gnb,vm_gnb_flavor_id,vm_image_gnb,vm_keypair_gnb,vm_security_groups_gnb)
+    # asignación de interfaces
+    listaVMs[vm_gnb_ueransim] = interfaz_GNB_UERANSIM 
+    ## Definicion de VM Open5GS Core
+    vm_nombre_o5gs = 'Open5GS-5GC-'+alumno
+    vm_o5gs_flavor_id =  listado['ubuntu'][0]
+    vm_image_o5gs = listado_imagenes['Open5GS-NS-5GC']
+    vm_keypair_o5gs = None
+    vm_security_groups_o5gs = None
+    # Creo la VM con los parámetros indicados
+    vm_core_open5GS = VM(vm_nombre_o5gs,vm_o5gs_flavor_id,vm_image_o5gs,vm_keypair_o5gs,vm_security_groups_o5gs)
+    # asignacion de interfaces
+    listaVMs[vm_core_open5GS] = interfaz_5GC_CPLANE_OPEN5GS
+    ## Definicion de VM Open5GS UPF-1
+    vm_nombre_o5gs_upf = 'Open5GS-UPF1-'+alumno
+    vm_o5gs_upf_flavor_id =  listado['2/2/10'][0]
+    vm_image_o5gs_upf = listado_imagenes['Open5GS-NS-UPF1']
+    vm_keypair_o5gs_upf = None
+    vm_security_groups_o5gs_upf = None
+    # Creo la VM con los parámetros indicados
+    vm_upf_1_open5GS = VM(vm_nombre_o5gs_upf,vm_o5gs_upf_flavor_id,vm_image_o5gs_upf,vm_keypair_o5gs_upf,vm_security_groups_o5gs_upf)
+    # asignacion de interfaces:
+    listaVMs[vm_upf_1_open5GS] = interfaz_5GC_UPLANE_1_OPEN5GS
+    ## Definicion de VM Open5GS UPF-2
+    vm_nombre_o5gs_upf = 'Open5GS-UPF2-'+alumno
+    vm_o5gs_upf_flavor_id =  listado['2/2/10'][0]
+    vm_image_o5gs_upf = listado_imagenes['Open5GS-NS-UPF2']
+    vm_keypair_o5gs_upf = None
+    vm_security_groups_o5gs_upf = None
+    # Creo la VM con los parámetros indicados
+    vm_upf_2_open5GS = VM(vm_nombre_o5gs_upf,vm_o5gs_upf_flavor_id,vm_image_o5gs_upf,vm_keypair_o5gs_upf,vm_security_groups_o5gs_upf)
+    # asignacion de interfaces:
+    listaVMs[vm_upf_2_open5GS] = interfaz_5GC_UPLANE_2_OPEN5GS
+    # Construyo la topologia
+    bodyResponse = {}
+    bodyResponse['codigo'] = alumno
+    bodyResponse['tipo'] = tipo
+    bodyResponse['topologyID'] = Topology_ID
+    responseValue=TopoConstructor().DefaultTopologyConstructor(listaVMs,CIDR,neutron,nova)
+    bodyResponse['topologyValues'] = responseValue
+    return bodyResponse
 if __name__ == "__main__":
     import uvicorn
     #Inicalizando servicio de API
