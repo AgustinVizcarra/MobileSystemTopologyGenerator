@@ -207,4 +207,5 @@ Este proyecto está bajo la GNU GPL v2.0 para más detalles remitase al archivo 
 * Expresamos nuestra más sincero reconocimiento a nuestros asesores **Cesar Santivañez** y **José Rodriguez** ya que sin ellos este proyecto no hubiera sido posible.
 * Agradecemos de sobremanera al Grupo de Investigación de Redes Avanzadas (GIRA) por todo el apoyo brindado y por siempre mostrar la mejor disposición para ayudar.
 * Agradecemos al equipo de NOKIA USA por la orientación profesional y por el soporte brindado.
+* Agradecemos a todos los desarrolladores detrás de las herramientas usadas ya que sin el desarrollo de sus herramientas y la disponibilidad de uso abierto, no hubieramos podido concretar este proyecto.
 * Agradecemos y dedicamos este trabajo a toda la especialidad de Ingeniería de las Telecomunicaciones de la Pontifica Universidad Católica del Perú.
