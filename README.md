@@ -14,7 +14,7 @@ Si en caso se quisiera replicar esta solución es importante tener en cuenta tod
 
 Para empezar se tiene que tener encuenta las siguientes dependecias:
 
-- [Openstack Victoria](https://www.openstack.org/software/victoria/) ![release](https://img.shields.io/badge/version-22.3.0%25-blue)
+- [Openstack Victoria](https://www.openstack.org/software/victoria/) ![release](https://img.shields.io/badge/version-22.3.0-blue)
 - [Python](https://www.python.org/downloads/release/python-380/) ![version](https://img.shields.io/badge/version-3.8-blue)
 - [Open5GS](https://open5gs.org/open5gs/docs/) ![release](https://img.shields.io/badge/release-2.6.6-blue)
 - [UERANSIM](https://github.com/aligungr/UERANSIM) ![release](https://img.shields.io/badge/release-3.2.6-blue)
