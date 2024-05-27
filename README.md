@@ -70,7 +70,11 @@ _Ahora para que esta imagen se encuentre disponible y la solución pueda acceder
 openstack image set --public IMAGE_ID
 ```
 > [!IMPORTANT]
-> Deberá primero hacer un listado de las imágenes importadas y luego deberá seleccionar el **IMAGE_ID** correspondiente a la imagen que quiera seleccionar
+> Deberá primero hacer un listado de las imágenes importadas mediante el siguiente comando
+> ```
+> glance image-list
+> ```
+> Luego, deberá seleccionar el **IMAGE_ID** correspondiente a la imagen que quiera volver público.
 ## Integración de OpenStack con el SDK ⚙️
 
 _Para que pueda funcionar el despliegue automatizado vía APIS se debe considerar realizas las siguientes modificaciones en el SDK para que este funcione de forma correcta:_
