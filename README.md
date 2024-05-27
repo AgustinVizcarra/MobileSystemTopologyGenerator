@@ -3,7 +3,7 @@
 Este proyecto consiste en una solución que permite el despliegue de redes minimalistas para estudio y análisis de los procedimientos internos de las redes 4G y 5G 
 de forma virtualizada. Asimismo este proyecto se apoya en **Openstack** de forma que el sistema permita el despliegue de las redes de forma automatizada por medio de 
 APIS gracias a un SDK. Es importante mencionar que para esta solución se tomó como referencia las herramientas de Core abierto **Open5GS**, herramientas de RAN
-como **UERANSIM**,  **srsRAN** y herramientas de análisis de paquetes como es el caso de **5G Trace Visualizer** y **Wireshark**
+como **UERANSIM**,  **srsRAN** y herramientas de análisis de paquetes como es el caso de **5G Trace Visualizer** y **Wireshark**.
 
 ## Comenzando 🚀
 
