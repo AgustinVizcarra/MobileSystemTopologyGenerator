@@ -204,7 +204,7 @@ _El personal detrás de la formulación, elaboración y ejecución de este proye
 
 ## Licencia 📄
 
-Este proyecto está bajo la GNU GPL v2.0 para más detalles remitase al archivo **LICENSE.GPL**
+Este proyecto está bajo la licencia GNU GPL v2.0 para más detalles remitase al archivo **LICENSE.GPL**
 
 ## Reconocimientos🎁
 
