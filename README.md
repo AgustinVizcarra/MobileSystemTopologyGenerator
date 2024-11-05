@@ -31,9 +31,12 @@ Para poder aplicar la solución se tuvieron nodos/máquinas virtuales con las si
 
 ### Instalación 🔧
 
-Para la instalación, primero debemos considerar el despliegue de OpenStack por lo que para eso debemos remitirnos a la siguiente topología utilizada:
+Para la instalación, primero debemos considerar el despliegue de OpenStack por lo que para eso debemos remitirnos a la siguiente topología (como ejemplo) utilizada:
 <p align="center"><b>Arquitectura de despliegue</b></p>
 <p align="center"><img src="https://github.com/AgustinVizcarra/MobileSystemTopologyGenerator/assets/92816809/978c089c-886f-45a2-bbd0-72a828a56a68" width="50%" height="50%" /></p> 
+
+> [!NOTE]
+> Puede considerar desplegar un mayor número de servidores, de acuerdo a la topología que Ud. quiera seguir. Para ello, deberá modificar las configuraciones según corresponda.
 
 Para seguir con la instalación de esta topología puede apoyarse en la [documentación oficial de Openstack](https://docs.openstack.org/install-guide/) o haciendo consulta al siguiente
 a los siguientes pasos en resumido:
